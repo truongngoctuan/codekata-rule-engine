@@ -1,0 +1,23 @@
+{
+  "DataType": "BLOCK",
+  "Children": [
+    {
+      "DataType": "FIXED_DATA",
+      "Value": {
+        "DataType": "INT",
+        "Value": "3"
+      }
+    },
+    {
+      "DataType": "OPERATOR",
+      "Operator": "ADD"
+    },
+    {
+      "DataType": "FIXED_DATA",
+      "Value": {
+        "DataType": "INT",
+        "Value": "3"
+      }
+    }
+  ]
+}

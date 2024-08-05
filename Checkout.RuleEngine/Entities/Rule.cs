@@ -42,11 +42,10 @@ namespace Checkout.RuleEngine.Entities
         },
         Condition = new BlockNode
         {
-          DataType = "BLOCK",
           Children = new BlockBase[] {
-            new BlockLeaf { DataType = "DYNAMIC_DATA", Value = new DataPoint { Value = "CartItem.Quantity", DataType = "INT" } },
-            new BlockLeaf { DataType = "OPERATOR_EQUALS" },
-            new BlockLeaf { DataType = "FIXED_DATA", Value = new DataPoint { Value = "3", DataType = "INT" } },
+            new BlockLeaf { Value = new DataPoint { Value = "CartItem.Quantity", DataType = "INT" } },
+            new BlockLeafOperator { Operator = "EQUALS" },
+            new BlockLeaf { Value = new DataPoint { Value = "3", DataType = "INT" } },
           }
         },
         Action = new RuleAction
@@ -58,17 +57,16 @@ namespace Checkout.RuleEngine.Entities
             Children = new BlockBase[] {
               // (int)(Items["A].UnitPrice / 3)
               new BlockCast {
-                DataType = "BLOCK_CAST",
                 CastDataType = "INT",
                 Children = new BlockBase[] {
                   // Items["A].UnitPrice / 3
-                  new BlockLeaf { DataType = "DYNAMIC_DATA", Value = new DataPoint { Value = "CartItem.UnitPrice", DataType = "INT" } },
-                  new BlockLeaf { DataType = "OPERATOR_DIVIDE" },
-                  new BlockLeaf { DataType = "FIXED_DATA", Value = new DataPoint { Value = "3", DataType = "INT" } },
+                  new BlockLeaf { Value = new DataPoint { Value = "CartItem.UnitPrice", DataType = "INT" } },
+                  new BlockLeafOperator { Operator = "DIVIDE" },
+                  new BlockLeaf { Value = new DataPoint { Value = "3", DataType = "INT" } },
                 }
               },
-              new BlockLeaf { DataType = "OPERATOR_MULTIPLY" },
-              new BlockLeaf { DataType = "FIXED_DATA", Value = new DataPoint { Value = "3", DataType = "INT" } },
+              new BlockLeafOperator { Operator = "MULTIPLY" },
+              new BlockLeaf { Value = new DataPoint { Value = "3", DataType = "INT" } },
             }
           }
         }
@@ -141,12 +139,17 @@ namespace Checkout.RuleEngine.Entities
 
   public class BlockBase
   {
-    public string DataType { get; set; }
+    // public string DataType { get; set; }
   }
 
   public class BlockNode : BlockBase
   {
     public BlockBase[] Children { get; set; }
+  }
+
+  public class BlockLeafOperator : BlockBase
+  {
+    public string Operator { get; set; }
   }
 
   public class BlockLeaf : BlockBase
