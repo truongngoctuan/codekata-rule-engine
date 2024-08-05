@@ -76,26 +76,26 @@ namespace Checkout.RuleEngine.Entities
   }
 
 
-  //CartItem
-  public class CartItem
-  {
-    public string SKU { get; set; }
-    public decimal UnitPrice { get; set; }
-    public uint Quantity { get; set; }
-    public virtual decimal Price
-    {
-      get
-      {
-        return UnitPrice * Quantity;
-      }
-    }
-  }
+  // //CartItem
+  // public class CartItem
+  // {
+  //   public string SKU { get; set; }
+  //   public decimal UnitPrice { get; set; }
+  //   public uint Quantity { get; set; }
+  //   public virtual decimal Price
+  //   {
+  //     get
+  //     {
+  //       return UnitPrice * Quantity;
+  //     }
+  //   }
+  // }
 
-  public class CartItemWithPriceReduction : CartItem
-  {
-    public decimal PriceReduction { get; set; }
-    public override decimal Price => base.Price - PriceReduction;
-  }
+  // public class CartItemWithPriceReduction : CartItem
+  // {
+  //   public decimal PriceReduction { get; set; }
+  //   public override decimal Price => base.Price - PriceReduction;
+  // }
 
   public class Item
   {

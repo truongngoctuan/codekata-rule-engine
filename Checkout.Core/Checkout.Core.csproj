@@ -1,5 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Checkout.RuleEngine\Checkout.RuleEngine.csproj" />
+    <ProjectReference Include="..\Checkout.Domain\Checkout.Domain.csproj" />
+    <InternalsVisibleTo Include="Checkout.Core.Tests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>

@@ -1,4 +1,6 @@
-﻿using Checkout.RuleEngine;
+﻿using Checkout.Core;
+using Checkout.Persistence;
+using Checkout.RuleEngine;
 using Checkout.RuleEngine.Entities;
 using Checkout.RuleEngine.Persistence;
 
@@ -8,10 +10,32 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        var productRepository = new ProductRepository();
         IRuleLoader ruleLoader = new RuleJsonFileLoader();
 
         var root = await ruleLoader.LoadAsync("block-tree.json");
         printTree(root.First().Condition);
+
+        if (root == null)
+        {
+            Console.WriteLine("No rule");
+        }
+
+        ICheckoutService checkoutService = new CheckoutService(productRepository)
+        {
+            Rules = root
+        };
+
+        checkoutService.Scan("A");
+        checkoutService.Scan("B");
+        checkoutService.Scan("C");
+        checkoutService.Scan("D");
+
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+
+        var total = checkoutService.Total();
+        Console.WriteLine(total);
 
 
         Console.WriteLine("Done");

@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Checkout.RuleEngine\Checkout.RuleEngine.csproj" />
     <ProjectReference Include="..\Infrastructure\Checkout.RuleEngine.Persistence\Checkout.RuleEngine.Persistence.csproj" />
+    <ProjectReference Include="..\Checkout.Core\Checkout.Core.csproj" />
+    <ProjectReference Include="..\Checkout.Persistence\Checkout.Persistence.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
