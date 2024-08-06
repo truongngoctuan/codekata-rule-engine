@@ -43,6 +43,16 @@ public class RuleEngineService : IRuleEngineService
             for (int i = 0; i < blockNode.Children.Count(); i++)
             {
                 var currentChildNode = blockNode.Children[i];
+                //convert dynamic data into fixed data
+                if (currentChildNode is BlockDynamicData)
+                {
+                    currentChildNode = new BlockData
+                    {
+                        Value = toFixedData(currentChildNode as BlockDynamicData, datas)
+                    };
+                }
+
+                // simple perform operators from left to right without considering sequencing
                 if (currentChildNode is BlockData)
                 {
                     if (left == null)
@@ -86,6 +96,8 @@ public class RuleEngineService : IRuleEngineService
             case OPERATORS.DIVIDE:
                 return DataPoint.NewInt(int.Parse(left.Value.Value) / int.Parse(right.Value.Value));
 
+            case OPERATORS.EQUALS:
+                return DataPoint.NewBool(int.Parse(left.Value.Value) == int.Parse(right.Value.Value));
             case OPERATORS.GREATER_THAN:
                 return DataPoint.NewBool(int.Parse(left.Value.Value) > int.Parse(right.Value.Value));
             case OPERATORS.GREATER_OR_EQUALS:
