@@ -1,4 +1,5 @@
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.ConstrainedExecution;
 using Checkout.RuleEngine.Entities;
 
@@ -150,17 +151,21 @@ namespace Checkout.RuleEngine.Entities
   public class BlockLeafOperator : BlockBase
   {
     public string Operator { get; set; }
+    public static BlockLeafOperator NewAdd() => new BlockLeafOperator { Operator = OPERATORS.ADD };
   }
 
   public class BlockLeaf : BlockBase
   {
     public DataPoint Value { get; set; }
+    public static BlockLeaf NewInt(int value) => new BlockLeaf { Value = DataPoint.NewInt(value) };
   }
 
   public class DataPoint
   {
     public string Value { get; set; }
     public string DataType { get; set; }
+    public static DataPoint NewInt(int value) => new DataPoint { DataType = DATA_TYPE.INT, Value = value.ToString() };
+    public static DataPoint NewBool(bool value) => new DataPoint { DataType = DATA_TYPE.BOOL, Value = value.ToString() };
   }
 
   public class BlockStatement : BlockBase

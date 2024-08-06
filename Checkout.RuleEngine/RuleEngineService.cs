@@ -70,12 +70,24 @@ namespace Checkout.RuleEngine
         {
             switch (opt.Operator)
             {
-                case "ADD":
-                    return new DataPoint
-                    {
-                        DataType = "INT",
-                        Value = (int.Parse(left.Value.Value) + int.Parse(right.Value.Value)).ToString()
-                    };
+                case OPERATORS.ADD:
+                    return DataPoint.NewInt(int.Parse(left.Value.Value) + int.Parse(right.Value.Value));
+                case OPERATORS.MINUS:
+                    return DataPoint.NewInt(int.Parse(left.Value.Value) - int.Parse(right.Value.Value));
+                case OPERATORS.MULTIPLY:
+                    return DataPoint.NewInt(int.Parse(left.Value.Value) * int.Parse(right.Value.Value));
+                case OPERATORS.DIVIDE:
+                    return DataPoint.NewInt(int.Parse(left.Value.Value) / int.Parse(right.Value.Value));
+
+                case OPERATORS.GREATER_THAN:
+                    return DataPoint.NewBool(int.Parse(left.Value.Value) > int.Parse(right.Value.Value));
+                case OPERATORS.GREATER_OR_EQUALS:
+                    return DataPoint.NewBool(int.Parse(left.Value.Value) >= int.Parse(right.Value.Value));
+                case OPERATORS.SMALLER_THAN:
+                    return DataPoint.NewBool(int.Parse(left.Value.Value) < int.Parse(right.Value.Value));
+                case OPERATORS.SMALLER_OR_EQUALS:
+                    return DataPoint.NewBool(int.Parse(left.Value.Value) <= int.Parse(right.Value.Value));
+
                 default:
                     throw new NotImplementedException();
             }

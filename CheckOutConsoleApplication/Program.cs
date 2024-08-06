@@ -60,6 +60,8 @@ class Program
         checkoutService.Scan("A");
 
         var total = checkoutService.Total();
+        // Total = 50 * 3 + 30 + 20 + 15 = 215
+        // special offer = 130 + 30 + 20 + 15 = 195
         Console.WriteLine($"Total = {total}");
     }
 
