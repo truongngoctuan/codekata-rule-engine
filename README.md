@@ -28,7 +28,8 @@ On the backend side, Clean architecture is applied to provide enterprise applica
 - [ASP.NET Core 8](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core)
 - [JSON file as a simple database](https://github.com/ttu/json-flatfile-datastore) in the infrastructure/persistence layer
 - [AutoMapper](https://automapper.org/)
+- xUnit and Moq for unit testings
 
 ## References
 
-- The github repository of [a Clean architecture](https://github.com/jasontaylordev/CleanArchitecture)
+- The GitHub repository of [a Clean Architecture](https://github.com/jasontaylordev/CleanArchitecture)

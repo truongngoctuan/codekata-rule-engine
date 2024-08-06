@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.Core", "Checkout.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.Core.Tests", "Checkout.Core.Tests\Checkout.Core.Tests.csproj", "{C278F70B-123C-4C92-B019-714AB3EA0B9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.Persistence", "Checkout.Persistence\Checkout.Persistence.csproj", "{831D9268-78DD-4076-BC85-E32B70170B0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.Persistence", "Infrastructure\Checkout.Persistence\Checkout.Persistence.csproj", "{831D9268-78DD-4076-BC85-E32B70170B0D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkout.Domain", "Checkout.Domain\Checkout.Domain.csproj", "{24EB256B-F593-4412-AE1E-DB7E709EFF2C}"
 EndProject
