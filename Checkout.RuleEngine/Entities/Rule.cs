@@ -158,6 +158,8 @@ namespace Checkout.RuleEngine.Entities
   {
     public DataPoint Value { get; set; }
     public static BlockLeaf NewInt(int value) => new BlockLeaf { Value = DataPoint.NewInt(value) };
+    public static BlockLeaf NewBool(bool value) => new BlockLeaf { Value = DataPoint.NewBool(value) };
+    public static BlockLeaf NewDecimal(decimal value) => new BlockLeaf { Value = DataPoint.NewDecimal(value) };
   }
 
   public class DataPoint
@@ -166,6 +168,7 @@ namespace Checkout.RuleEngine.Entities
     public string DataType { get; set; }
     public static DataPoint NewInt(int value) => new DataPoint { DataType = DATA_TYPE.INT, Value = value.ToString() };
     public static DataPoint NewBool(bool value) => new DataPoint { DataType = DATA_TYPE.BOOL, Value = value.ToString() };
+    public static DataPoint NewDecimal(decimal value) => new DataPoint { DataType = DATA_TYPE.DECIMAL, Value = value.ToString() };
   }
 
   public class BlockStatement : BlockBase

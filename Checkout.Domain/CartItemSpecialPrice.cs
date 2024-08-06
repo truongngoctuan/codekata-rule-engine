@@ -3,16 +3,31 @@ using System.Collections.Generic;
 
 namespace Checkout.Domain
 {
-  public class CartItemSpecialPrice : CartItemSpecialOfferBase
-  {
-    public uint Quantity { get; set; }
-    public decimal SpecialOffer { get; set; }
-    public override decimal GetPriceReduction(CartItem item)
+    public class CartItemPriceReduction : CartItemSpecialOfferBase
     {
-      // there is no limit to the number of items
-      uint fold = item.Quantity / Quantity;
-      return fold * (Quantity * item.UnitPrice - SpecialOffer);
-      throw new NotImplementedException();
+        public CartItemPriceReduction(decimal deduction)
+        {
+            Deduction = deduction;
+        }
+
+        public decimal Deduction { get; }
+
+        public override decimal GetPriceReduction(CartItem item)
+        {
+            return Deduction;
+        }
     }
-  }
+
+    public class CartItemSpecialPrice : CartItemSpecialOfferBase
+    {
+        public uint Quantity { get; set; }
+        public decimal SpecialOffer { get; set; }
+        public override decimal GetPriceReduction(CartItem item)
+        {
+            // there is no limit to the number of items
+            uint fold = item.Quantity / Quantity;
+            return fold * (Quantity * item.UnitPrice - SpecialOffer);
+            throw new NotImplementedException();
+        }
+    }
 }

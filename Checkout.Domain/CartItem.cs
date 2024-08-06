@@ -16,7 +16,7 @@ namespace Checkout.Domain
             decimal totalReduction = 0;
             foreach (var item in Modifiers)
             {
-                totalReduction += item.GetPriceReduction(this);
+                totalReduction -= item.GetPriceReduction(this);
             }
             return UnitPrice * Quantity + totalReduction;
         }

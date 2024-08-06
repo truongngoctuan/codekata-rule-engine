@@ -1,5 +1,6 @@
 using Checkout.Core.Contracts.Persistences;
 using Checkout.Domain.Entities;
+using Checkout.RuleEngine;
 using Moq;
 
 namespace Checkout.Core.Tests;
@@ -12,7 +13,8 @@ public class CheckoutService_Scan_Tests
     {
         //Arrange test
         var productRepository = new Mock<IProductRepository>();
-        var checkoutService = new CheckoutService(productRepository.Object);
+        var ruleEngine = new Mock<IRuleEngineService>();
+        var checkoutService = new CheckoutService(productRepository.Object, ruleEngine.Object);
 
         productRepository.Setup(s => s.GetBySkuAsync("A"))
             .Returns(Task.FromResult(new ProductEntity
@@ -35,7 +37,8 @@ public class CheckoutService_Scan_Tests
     {
         //Arrange test
         var productRepository = new Mock<IProductRepository>();
-        var checkoutService = new CheckoutService(productRepository.Object);
+        var ruleEngine = new Mock<IRuleEngineService>();
+        var checkoutService = new CheckoutService(productRepository.Object, ruleEngine.Object);
 
         productRepository.Setup(s => s.GetBySkuAsync("A"))
             .Returns(Task.FromResult(new ProductEntity
