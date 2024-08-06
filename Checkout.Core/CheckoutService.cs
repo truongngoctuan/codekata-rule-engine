@@ -31,7 +31,7 @@ namespace Checkout.Core
                 {
                     var currentItem = CartItems[sku];
                     currentItem.Quantity += 1;
-                    applyRules(currentItem, Rules);
+                    currentItem.Modifiers = applyRules(CartItems, Rules);
 
                     CartItems[sku] = currentItem;
                 }
@@ -45,7 +45,7 @@ namespace Checkout.Core
                         Modifiers = new List<CartItemSpecialOfferBase>()
                     };
                     CartItems[sku] = currentItem;
-                    applyRules(currentItem, Rules);
+                    CartItems[sku].Modifiers = applyRules(CartItems, Rules);
                 }
             }
         }
@@ -60,10 +60,9 @@ namespace Checkout.Core
             return total;
         }
 
-        void applyRules(CartItem item, IEnumerable<RuleEngine.Entities.Rule> rules)
+        IEnumerable<CartItemSpecialOfferBase> applyRules(Dictionary<string, CartItem> cartItems, IEnumerable<RuleEngine.Entities.Rule> rules)
         {
-            item.Modifiers = new List<CartItemSpecialOfferBase>();
-
+            var modifiers = new List<CartItemSpecialOfferBase>();
 
             foreach (var rule in rules)
             {
@@ -71,14 +70,18 @@ namespace Checkout.Core
                 var datas = new Dictionary<string, dynamic>();
                 foreach (var dataPointDefinition in rule.Data)
                 {
-                    var extractor = new DataPointCartItemExtractor(CartItems.Values.ToArray());
+                    var extractor = new DataPointCartItemExtractor(cartItems.Values.ToArray());
                     var data = extractor.Extract(dataPointDefinition);
                     if (data != null)
                     {
                         datas[dataPointDefinition.Name] = data;
+                        continue;
+                    }
+                    if (dataPointDefinition.IsRequired)
+                    {
+                        return modifiers;
                     }
                 }
-
 
                 var conditionResult = ruleEngineService.Compute(rule.Condition, datas);
                 if (conditionResult.DataType == DATA_TYPE.BOOL &&
@@ -87,11 +90,13 @@ namespace Checkout.Core
                     var actionResult = ruleEngineService.Compute(rule.Action.ComputedValue, datas);
                     if (actionResult.DataType == DATA_TYPE.DECIMAL)
                     {
-                        item.Modifiers = item.Modifiers.Append(new CartItemPriceReduction(decimal.Parse(actionResult.Value)));
-                        return;
+                        modifiers.Add(new CartItemPriceReduction(decimal.Parse(actionResult.Value)));
+                        return modifiers;
                     }
                 }
             }
+
+            return modifiers;
         }
     }
 }

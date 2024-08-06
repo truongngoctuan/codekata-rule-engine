@@ -13,7 +13,7 @@ public class RuleEngineService_Compute_Tests
         {
             Children = [
                 BlockData.NewInt(2),
-                BlockLeafOperator.NewAdd(),
+                BlockOperator.NewAdd(),
                 BlockData.NewInt(2),
             ]
         };
@@ -36,7 +36,7 @@ public class RuleEngineService_Compute_Tests
         {
             Children = [
                 BlockData.NewInt(2),
-                new BlockLeafOperator { Operator = OPERATORS.GREATER_THAN },
+                new BlockOperator { Operator = OPERATORS.GREATER_THAN },
                 BlockData.NewInt(1),
             ]
         };

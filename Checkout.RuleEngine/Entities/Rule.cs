@@ -45,7 +45,7 @@ namespace Checkout.RuleEngine.Entities
         {
           Children = [
             new BlockData { Value = new DataPoint { Value = "CartItem.Quantity", DataType = "INT" } },
-            new BlockLeafOperator { Operator = "EQUALS" },
+            new BlockOperator { Operator = "EQUALS" },
             new BlockData { Value = new DataPoint { Value = "3", DataType = "INT" } },
           ]
         },
@@ -62,11 +62,11 @@ namespace Checkout.RuleEngine.Entities
                 Children = [
                   // Items["A].UnitPrice / 3
                   new BlockData { Value = new DataPoint { Value = "CartItem.UnitPrice", DataType = "INT" } },
-                  new BlockLeafOperator { Operator = "DIVIDE" },
+                  new BlockOperator { Operator = "DIVIDE" },
                   new BlockData { Value = new DataPoint { Value = "3", DataType = "INT" } },
                 ]
               },
-              new BlockLeafOperator { Operator = "MULTIPLY" },
+              new BlockOperator { Operator = "MULTIPLY" },
               new BlockData { Value = new DataPoint { Value = "3", DataType = "INT" } },
             ]
           }
@@ -110,6 +110,7 @@ namespace Checkout.RuleEngine.Entities
     public string Name { get; set; }
     public string DataType { get; set; }
     public DataPointParam[] Params { get; set; }
+    public bool IsRequired { get; set; }
 
     // void SampleRule()
     // {
@@ -148,10 +149,10 @@ namespace Checkout.RuleEngine.Entities
     public BlockBase[] Children { get; set; }
   }
 
-  public class BlockLeafOperator : BlockBase
+  public class BlockOperator : BlockBase
   {
     public string Operator { get; set; }
-    public static BlockLeafOperator NewAdd() => new BlockLeafOperator { Operator = OPERATORS.ADD };
+    public static BlockOperator NewAdd() => new BlockOperator { Operator = OPERATORS.ADD };
   }
 
   public class BlockData : BlockBase

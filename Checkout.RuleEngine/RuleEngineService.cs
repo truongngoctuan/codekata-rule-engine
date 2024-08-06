@@ -39,7 +39,7 @@ public class RuleEngineService : IRuleEngineService
             }
 
             BlockData left = null;
-            BlockLeafOperator opt = null;
+            BlockOperator opt = null;
             for (int i = 0; i < blockNode.Children.Count(); i++)
             {
                 var currentChildNode = blockNode.Children[i];
@@ -69,9 +69,9 @@ public class RuleEngineService : IRuleEngineService
                     opt = null;
                     continue;
                 }
-                if (currentChildNode is BlockLeafOperator)
+                if (currentChildNode is BlockOperator)
                 {
-                    opt = currentChildNode as BlockLeafOperator;
+                    opt = currentChildNode as BlockOperator;
                     continue;
                 }
             }
@@ -83,7 +83,7 @@ public class RuleEngineService : IRuleEngineService
         return new DataPoint { DataType = "BOOL", Value = "true" };
     }
 
-    DataPoint performOperation(BlockData left, BlockLeafOperator opt, BlockData right)
+    DataPoint performOperation(BlockData left, BlockOperator opt, BlockData right)
     {
         switch (opt.Operator)
         {
@@ -114,7 +114,10 @@ public class RuleEngineService : IRuleEngineService
 
     internal DataPoint toFixedData(BlockDynamicData blockDynamicData, Dictionary<string, dynamic> datas)
     {
+
         var splits = blockDynamicData.Value.Value.Split(".");
+        if (!datas.ContainsKey(splits[0])) return null;
+
         var data = datas[splits[0]];
         dynamic dataValue = null;
         for (var i = 1; i < splits.Length; i++)
@@ -125,10 +128,5 @@ public class RuleEngineService : IRuleEngineService
         }
 
         return new DataPoint { Value = dataValue.ToString(), DataType = blockDynamicData.Value.DataType };
-    }
-
-    public bool IsMatchCondition(BlockBase rule, DataPoint datas)
-    {
-        return true;
     }
 }
