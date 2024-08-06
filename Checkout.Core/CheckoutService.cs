@@ -31,7 +31,7 @@ namespace Checkout.Core
                 {
                     var currentItem = CartItems[sku];
                     currentItem.Quantity += 1;
-                    // applyRules(currentItem, Rules);
+                    applyRules(currentItem, Rules);
 
                     CartItems[sku] = currentItem;
                 }
@@ -44,9 +44,8 @@ namespace Checkout.Core
                         UnitPrice = product.UnitPrice,
                         Modifiers = new List<CartItemSpecialOfferBase>()
                     };
-                    applyRules(currentItem, Rules);
-
                     CartItems[sku] = currentItem;
+                    applyRules(currentItem, Rules);
                 }
             }
         }
@@ -63,13 +62,29 @@ namespace Checkout.Core
 
         void applyRules(CartItem item, IEnumerable<RuleEngine.Entities.Rule> rules)
         {
+            item.Modifiers = new List<CartItemSpecialOfferBase>();
+
+
             foreach (var rule in rules)
             {
-                var conditionResult = ruleEngineService.Compute(rule.Condition, null);
+                // extract data from its definition
+                var datas = new Dictionary<string, dynamic>();
+                foreach (var dataPointDefinition in rule.Data)
+                {
+                    var extractor = new DataPointCartItemExtractor(CartItems.Values.ToArray());
+                    var data = extractor.Extract(dataPointDefinition);
+                    if (data != null)
+                    {
+                        datas[dataPointDefinition.Name] = data;
+                    }
+                }
+
+
+                var conditionResult = ruleEngineService.Compute(rule.Condition, datas);
                 if (conditionResult.DataType == DATA_TYPE.BOOL &&
                     conditionResult.Value == BOOL_DATA.TRUE)
                 {
-                    var actionResult = ruleEngineService.Compute(rule.Action.ComputedValue, null);
+                    var actionResult = ruleEngineService.Compute(rule.Action.ComputedValue, datas);
                     if (actionResult.DataType == DATA_TYPE.DECIMAL)
                     {
                         item.Modifiers = item.Modifiers.Append(new CartItemPriceReduction(decimal.Parse(actionResult.Value)));

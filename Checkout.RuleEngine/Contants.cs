@@ -11,6 +11,7 @@ public static class OPERATORS
   public const string MINUS = "MINUS";
 
   // Relational
+  public const string EQUALS = "EQUALS";
   public const string GREATER_THAN = "GREATER_THAN";
   public const string GREATER_OR_EQUALS = "GREATER_OR_EQUALS";
   public const string SMALLER_THAN = "SMALLER_THAN";

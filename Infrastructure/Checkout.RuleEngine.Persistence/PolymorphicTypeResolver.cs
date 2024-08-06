@@ -26,7 +26,8 @@ namespace Checkout.RuleEngine.Persistence
           DerivedTypes =
                 {
                     new JsonDerivedType(typeof(BlockNode), "BLOCK"),
-                    new JsonDerivedType(typeof(BlockLeaf), "FIXED_DATA")
+                    new JsonDerivedType(typeof(BlockData), "FIXED_DATA"),
+                    new JsonDerivedType(typeof(BlockDynamicData), "DYNAMIC_DATA")
                 }
         };
       }

@@ -12,9 +12,9 @@ public class RuleEngineService_Compute_Tests
         var root = new BlockNode
         {
             Children = [
-                BlockLeaf.NewInt(2),
+                BlockData.NewInt(2),
                 BlockLeafOperator.NewAdd(),
-                BlockLeaf.NewInt(2),
+                BlockData.NewInt(2),
             ]
         };
 
@@ -35,9 +35,9 @@ public class RuleEngineService_Compute_Tests
         var root = new BlockNode
         {
             Children = [
-                BlockLeaf.NewInt(2),
+                BlockData.NewInt(2),
                 new BlockLeafOperator { Operator = OPERATORS.GREATER_THAN },
-                BlockLeaf.NewInt(1),
+                BlockData.NewInt(1),
             ]
         };
 
