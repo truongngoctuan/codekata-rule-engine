@@ -141,7 +141,7 @@ namespace Checkout.RuleEngine.Entities
 
   public class BlockBase
   {
-    public string DataType { get; set; }
+    // public string DataType { get; set; }
   }
 
   public class BlockNode : BlockBase

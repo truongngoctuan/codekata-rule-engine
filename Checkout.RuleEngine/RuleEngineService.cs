@@ -18,31 +18,57 @@ public class RuleEngineService : IRuleEngineService
     /// <returns></returns>
     public DataPoint Compute(BlockBase root, Dictionary<string, dynamic> datas)
     {
-        // stop condition
         if (root is BlockData)
         {
-            var blockLeaf = root as BlockData;
-            return blockLeaf.Value;
+            return handleBlockData(root as BlockData);
         }
 
         if (root is BlockDynamicData)
         {
-            return toFixedData(root as BlockDynamicData, datas);
+            return handleBlockDynamicData(root as BlockDynamicData, datas);
         }
 
         if (root is BlockNode)
         {
-            var blockNode = root as BlockNode;
-            if (blockNode.Children.Count() == 1)
-            {
-                return Compute(blockNode.Children[0], datas);
-            }
+            return handleBlockNode(root as BlockNode, datas);
+        }
+
+        throw new NotImplementedException();
+    }
+
+    DataPoint handleBlockData(BlockData blockLeaf)
+    {
+        return blockLeaf.Value;
+    }
+
+    DataPoint handleBlockDynamicData(BlockDynamicData blockLeaf, Dictionary<string, dynamic> datas)
+    {
+        return toFixedData(blockLeaf, datas);
+    }
+
+    DataPoint handleBlockNode(BlockNode blockNode, Dictionary<string, dynamic> datas)
+    {
+        if (blockNode.Children.Count() == 1)
+        {
+            return Compute(blockNode.Children[0], datas);
+        }
+
+        var childrenNodes = blockNode.Children.ToList();
+        var optsPrecedencesDict = new Dictionary<ushort, bool>();
+        var optPrecedences = childrenNodes.Where(node => node is BlockOperator)
+            .Select(node => OPERATORS.Operators_Precedence[(node as BlockOperator).Operator])
+            .Distinct().ToArray();
+        Array.Sort(optPrecedences);
+
+        foreach (var optPrecedence in optPrecedences)
+        {
+            var newChildrenNode = new List<BlockBase>();
 
             BlockData left = null;
-            BlockOperator opt = null;
-            for (int i = 0; i < blockNode.Children.Count(); i++)
+            BlockOperator blockOpt = null;
+            for (int i = 0; i < childrenNodes.Count(); i++)
             {
-                var currentChildNode = blockNode.Children[i];
+                var currentChildNode = childrenNodes[i];
                 //convert dynamic data into fixed data
                 if (currentChildNode is BlockDynamicData)
                 {
@@ -61,26 +87,40 @@ public class RuleEngineService : IRuleEngineService
                         continue;
                     }
                     var right = currentChildNode as BlockData;
-                    var result = performOperation(left, opt, right);
+                    var result = performOperation(left, blockOpt, right);
                     left = new BlockData
                     {
                         Value = result
                     };
-                    opt = null;
+                    blockOpt = null;
                     continue;
                 }
                 if (currentChildNode is BlockOperator)
                 {
-                    opt = currentChildNode as BlockOperator;
-                    continue;
+                    if (OPERATORS.Operators_Precedence[(currentChildNode as BlockOperator).Operator] == optPrecedence)
+                    {
+                        blockOpt = currentChildNode as BlockOperator;
+                        continue;
+                    }
+                    newChildrenNode.Add(left);
+                    newChildrenNode.Add(currentChildNode);
+                    left = null;
                 }
             }
 
-            return left.Value;
+            if (left != null)
+            {
+                newChildrenNode.Add(left);
+            }
+            childrenNodes = newChildrenNode;
         }
 
-        // perform cast after computing value
-        return new DataPoint { DataType = "BOOL", Value = "true" };
+        if (childrenNodes.Count == 1)
+        {
+            return (childrenNodes[0] as BlockData).Value;
+        }
+
+        return null;
     }
 
     DataPoint performOperation(BlockData left, BlockOperator opt, BlockData right)

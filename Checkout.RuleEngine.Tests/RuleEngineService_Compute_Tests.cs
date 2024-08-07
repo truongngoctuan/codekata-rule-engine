@@ -49,4 +49,29 @@ public class RuleEngineService_Compute_Tests
         Assert.Equal(BOOL_DATA.TRUE, result.Value);
         Assert.Equal(DATA_TYPE.BOOL, result.DataType);
     }
+
+    [Fact]
+    public void Compute_OperatorPrecedence()
+    {
+        //Arrange test
+        var engine = new RuleEngineService();
+        var root = new BlockNode
+        {
+            Children = [
+                BlockData.NewInt(1),
+                new BlockOperator { Operator = OPERATORS.SMALLER_THAN },
+                BlockData.NewInt(1),
+                new BlockOperator { Operator = OPERATORS.ADD },
+                BlockData.NewInt(1),
+            ]
+        };
+
+        //Act test
+        var result = engine.Compute(root, null);
+
+        //Assert test
+        Assert.NotNull(result);
+        Assert.Equal(BOOL_DATA.TRUE, result.Value);
+        Assert.Equal(DATA_TYPE.BOOL, result.DataType);
+    }
 }
