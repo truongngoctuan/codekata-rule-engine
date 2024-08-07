@@ -88,7 +88,8 @@ namespace Checkout.Core
                     conditionResult.Value == BOOL_DATA.TRUE)
                 {
                     var actionResult = ruleEngineService.Compute(rule.Action.ComputedValue, datas);
-                    if (actionResult.DataType == DATA_TYPE.DECIMAL)
+                    if (actionResult.DataType == DATA_TYPE.DECIMAL ||
+                        actionResult.DataType == DATA_TYPE.INT)
                     {
                         modifiers.Add(new CartItemPriceReduction(decimal.Parse(actionResult.Value)));
                         return modifiers;

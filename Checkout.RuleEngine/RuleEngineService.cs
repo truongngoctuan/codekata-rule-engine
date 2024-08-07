@@ -74,7 +74,7 @@ public class RuleEngineService : IRuleEngineService
                 {
                     currentChildNode = new BlockData
                     {
-                        Value = toFixedData(currentChildNode as BlockDynamicData, datas)
+                        Value = handleBlockDynamicData(currentChildNode as BlockDynamicData, datas)
                     };
                 }
 
@@ -125,6 +125,7 @@ public class RuleEngineService : IRuleEngineService
 
     DataPoint performOperation(BlockData left, BlockOperator opt, BlockData right)
     {
+        // TODO: handle different data type and casting
         switch (opt.Operator)
         {
             case OPERATORS.ADD:

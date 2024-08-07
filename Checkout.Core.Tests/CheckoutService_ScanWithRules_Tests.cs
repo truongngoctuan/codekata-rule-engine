@@ -67,17 +67,7 @@ public class CheckoutService_ScanWithRules_Tests
         var r = new Rule
         {
             Data = [
-                new DataPointDefinition {
-                    Name = "CartItem",
-                    DataType = "CART_ITEM",
-                    Params = [
-                        new DataPointParam {
-                            Key = "SKU",
-                            DataType = "STRING",
-                            Value = "A"
-                        }
-                    ]
-                }
+                getCartItemDefinition("A")
             ],
             Condition = new BlockNode
             {
@@ -125,18 +115,7 @@ public class CheckoutService_ScanWithRules_Tests
         var r = new Rule
         {
             Data = [
-                new DataPointDefinition {
-                    Name = "CartItem",
-                    DataType = "CART_ITEM",
-                    IsRequired = true,
-                    Params = [
-                        new DataPointParam {
-                            Key = "SKU",
-                            DataType = "STRING",
-                            Value = "B"
-                        }
-                    ]
-                }
+                getCartItemDefinition("B")
             ],
             Condition = new BlockNode
             {
@@ -170,4 +149,149 @@ public class CheckoutService_ScanWithRules_Tests
         Assert.Empty(checkoutService.CartItems["A"].Modifiers);
         Assert.Equal(unitPrice, result);
     }
+
+    [Fact]
+    public void Scan_SpecialOffers_ReturnItemAWithSpecialOffers()
+    {
+        //Arrange test
+        var productRepository = new Mock<IProductRepository>();
+        var ruleEngine = new RuleEngineService();
+
+        var checkoutService = new CheckoutService(productRepository.Object, ruleEngine);
+
+        var r = new Rule
+        {
+            Data = [
+                getCartItemDefinition("A")
+            ],
+            Condition = new BlockNode
+            {
+                Children = [
+                    // Items["A"].Quantity / 3 > 0
+                    BlockDynamicData.NewInt("CartItem.Quantity"),
+                    new BlockOperator { Operator = OPERATORS.DIVIDE },
+                    BlockData.NewInt(3),
+                    new BlockOperator { Operator = OPERATORS.GREATER_THAN },
+                    BlockData.NewInt(0)
+                ]
+            },
+            Action = new RuleAction
+            {
+                ActionType = "PRICE_REDUCTION",
+                ComputedValue = new BlockNode
+                {
+                    Children = [
+                        //Items["A].Quantity / 3 * SpecialPrice
+                        BlockDynamicData.NewInt("CartItem.Quantity"),
+                        new BlockOperator { Operator = OPERATORS.DIVIDE },
+                        BlockData.NewInt(3),
+                        new BlockOperator { Operator = OPERATORS.MULTIPLY },
+                        BlockData.NewInt(20),
+                    ]
+                }
+            }
+        };
+        checkoutService.Rules = [r];
+
+        productRepository.Setup(s => s.GetBySkuAsync("A"))
+            .Returns(Task.FromResult(new ProductEntity
+            {
+                SKU = "A",
+                UnitPrice = 50
+            }));
+
+        //Act test
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        var result = checkoutService.Total();
+
+        //Assert test
+        Assert.Single(checkoutService.CartItems);
+        Assert.Single(checkoutService.CartItems["A"].Modifiers);
+        Assert.Equal(130, result);
+    }
+    [Fact]
+    public void Scan_SpecialOffers2Times_ReturnItemAWith2XSpecialOffers()
+    {
+        //Arrange test
+        var productRepository = new Mock<IProductRepository>();
+        var ruleEngine = new RuleEngineService();
+
+        var checkoutService = new CheckoutService(productRepository.Object, ruleEngine);
+
+        var r = new Rule
+        {
+            Data = [
+                getCartItemDefinition("A")
+            ],
+            Condition = new BlockNode
+            {
+                Children = [
+                    // Items["A"].Quantity / 3 > 0
+                    BlockDynamicData.NewInt("CartItem.Quantity"),
+                    new BlockOperator { Operator = OPERATORS.DIVIDE },
+                    BlockData.NewInt(3),
+                    new BlockOperator { Operator = OPERATORS.GREATER_THAN },
+                    BlockData.NewInt(0)
+                ]
+            },
+            Action = new RuleAction
+            {
+                ActionType = "PRICE_REDUCTION",
+                ComputedValue = new BlockNode
+                {
+                    Children = [
+                        //Items["A].Quantity / 3 * SpecialPrice
+                        BlockDynamicData.NewInt("CartItem.Quantity"),
+                        new BlockOperator { Operator = OPERATORS.DIVIDE },
+                        BlockData.NewInt(3),
+                        new BlockOperator { Operator = OPERATORS.MULTIPLY },
+                        BlockData.NewInt(20),
+                    ]
+                }
+            }
+        };
+        checkoutService.Rules = [r];
+
+        productRepository.Setup(s => s.GetBySkuAsync("A"))
+            .Returns(Task.FromResult(new ProductEntity
+            {
+                SKU = "A",
+                UnitPrice = 50
+            }));
+
+        //Act test
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        checkoutService.Scan("A");
+        var result = checkoutService.Total();
+
+        //Assert test
+        Assert.Single(checkoutService.CartItems);
+        Assert.Single(checkoutService.CartItems["A"].Modifiers);
+        Assert.Equal(260, result);
+    }
+
+    #region data setup
+    DataPointDefinition getCartItemDefinition(string sku)
+    {
+        return new DataPointDefinition
+        {
+            Name = "CartItem",
+            DataType = "CART_ITEM",
+            IsRequired = true,
+            Params = [
+                        new DataPointParam {
+                            Key = "SKU",
+                            DataType = "STRING",
+                            Value = sku
+                        }
+                    ]
+        };
+    }
+    #endregion
 }

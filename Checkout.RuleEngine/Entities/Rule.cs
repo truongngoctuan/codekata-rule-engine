@@ -17,7 +17,7 @@ namespace Checkout.RuleEngine.Entities
     // rule:
     // if: Items["A"].Quantity / 3 > 0
     // simpler version: if: Items["A"].Quantity == 3
-    // then: (int)(Items["A].UnitPrice / 3) * SpecialPrice
+    // then: Items["A].Quantity / 3 * SpecialPrice
     // data: SpecialPrice = -20
     // dynamic data:
     //    Items Array of CartItem
